@@ -1,0 +1,29 @@
+name: 🚀 Docker Build, Run and Push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-run-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔄 Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: 🔐 Log in to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: 🛠️ Build Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/jun23:latest .
+
+      - name: 🚀 Run Docker Container (optional)
+        run: |
+          docker run -d -p 3000:3000 --name jun20container ${{ secrets.DOCKER_USERNAME }}/jun23:latest
+
+      - name: 📤 Push Docker Image to DockerHub
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/jun23:latest
