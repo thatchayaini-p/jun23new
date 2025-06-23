@@ -1,0 +1,14 @@
+{
+  "name": "jun20app",
+  "version": "1.0.0",
+  "description": "Sample Node.js app for DockerHub deployment",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Thatchayaini",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
