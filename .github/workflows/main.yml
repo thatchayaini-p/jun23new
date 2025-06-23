@@ -3,7 +3,7 @@ name: Docker Build and Push
 on:
   push:
     branches:
-      - main 
+      - main
   pull_request:
     branches:
       - main
@@ -13,9 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      DOCKER_USERNAME: thatchayaini123
       IMAGE_NAME: jun23
       TAG: latest
-      CONTAINER_NAME: containerv1
+      CONTAINER_NAME: mycontainerv3
       PORT: 3000
 
     steps:
@@ -24,22 +25,22 @@ jobs:
 
       - name: ⚙️ Build Docker Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} .
+          docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TAG .
 
       - name: 🧹 Remove Old Container If Exists
         run: |
-          if [ "$(docker ps -aq -f name=${{ env.CONTAINER_NAME }})" ]; then
-            docker stop ${{ env.CONTAINER_NAME }} || true
-            docker rm ${{ env.CONTAINER_NAME }} || true
+          if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
+            docker stop $CONTAINER_NAME || true
+            docker rm $CONTAINER_NAME || true
           fi
 
       - name: 🚀 Run Docker Container
         run: |
-          docker run -d --name ${{ env.CONTAINER_NAME }} -p ${{ env.PORT }}:${{ env.PORT }} ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
+          docker run -d --name $CONTAINER_NAME -p $PORT:$PORT $DOCKER_USERNAME/$IMAGE_NAME:$TAG
 
       - name: 📤 Push to Docker Hub
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
+          docker push $DOCKER_USERNAME/$IMAGE_NAME:$TAG
 
 
 
