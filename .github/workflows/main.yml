@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on:  ubuntu-latest
+    runs-on: ubuntu-latest
 
     env:
       DOCKER_USERNAME: thatchayaini123
@@ -38,9 +38,13 @@ jobs:
         run: |
           docker run -d --name $CONTAINER_NAME -p $PORT:$PORT $DOCKER_USERNAME/$IMAGE_NAME:$TAG
 
+      - name: 🔐 Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u $DOCKER_USERNAME --password-stdin
+
       - name: 📤 Push to Docker Hub
         run: |
-          docker push $thatchayaini123/$jun23:$latest
+          docker push $DOCKER_USERNAME/$IMAGE_NAME:$TAG
+
 
 
 
