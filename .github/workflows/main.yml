@@ -16,12 +16,15 @@ jobs:
       DOCKER_USERNAME: thatchayaini123
       IMAGE_NAME: jun23
       TAG: latest
-      CONTAINER_NAME: mycontainerv1
+      CONTAINER_NAME: mycontainer
       PORT: 3000
 
     steps:
       - name: 🔄 Checkout Code
         uses: actions/checkout@v4
+
+      - name: 🔐 Docker Login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ env.DOCKER_USERNAME }}" --password-stdin
 
       - name: ⚙️ Build Docker Image
         run: |
@@ -41,4 +44,5 @@ jobs:
       - name: 📤 Push to Docker Hub
         run: |
           docker push $DOCKER_USERNAME/$IMAGE_NAME:$TAG
+
 
