@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DOCKER_USERNAME: thatchayaini123
       IMAGE_NAME: jun23
       TAG: latest
       CONTAINER_NAME: mycontainerv3
@@ -25,7 +24,7 @@ jobs:
 
       - name: ⚙️ Build Docker Image
         run: |
-          docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TAG .
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$TAG .
 
       - name: 🧹 Remove Old Container If Exists
         run: |
@@ -36,11 +35,11 @@ jobs:
 
       - name: 🚀 Run Docker Container
         run: |
-          docker run -d --name $CONTAINER_NAME -p $PORT:$PORT $DOCKER_USERNAME/$IMAGE_NAME:$TAG
+          docker run -d --name $CONTAINER_NAME -p $PORT:$PORT ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$TAG
 
-      - name: 📤 Push to Docker Hub
-        run: |
-          docker push $DOCKER_USERNAME/$IMAGE_NAME:$TAG
+      - name: 📤 Push Docker Image to Docker Hub
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$TAG
+
 
 
 
