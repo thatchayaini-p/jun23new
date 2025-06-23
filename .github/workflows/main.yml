@@ -10,28 +10,18 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on:  ubuntu-latest
 
     env:
       DOCKER_USERNAME: thatchayaini123
       IMAGE_NAME: jun23
       TAG: latest
-      CONTAINER_NAME: mycontainer
+      CONTAINER_NAME: containerv1
       PORT: 3000
 
     steps:
       - name: 🔄 Checkout Code
         uses: actions/checkout@v4
-
-      - name: 🛡️ Check DOCKER_PASSWORD Secret Exists
-        run: |
-          if [ -z "${{ secrets.DOCKER_PASSWORD }}" ]; then
-            echo "❌ DOCKER_PASSWORD secret is not set. Please add it in GitHub repository secrets."
-            exit 1
-          fi
-
-      - name: 🔐 Docker Login
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ env.DOCKER_USERNAME }}" --password-stdin
 
       - name: ⚙️ Build Docker Image
         run: |
@@ -50,7 +40,7 @@ jobs:
 
       - name: 📤 Push to Docker Hub
         run: |
-          docker push $DOCKER_USERNAME/$IMAGE_NAME:$TAG
+          docker push $thatchayaini123/$jun23:$latest
 
 
 
