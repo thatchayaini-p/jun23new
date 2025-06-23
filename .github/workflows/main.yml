@@ -1,24 +1,44 @@
-name: 🚀 Docker Build, Run and Push
+name: Docker Build and Push
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build-run-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
+    env:
+      DOCKER_USERNAME: thatchayaini123
+      IMAGE_NAME: jun23
+      TAG: latest
+      CONTAINER_NAME: mycontainerv1
+      PORT: 3000
+
     steps:
-      - name: 🔄 Checkout Repository
-        uses: actions/checkout@v3
+      - name: 🔄 Checkout Code
+        uses: actions/checkout@v4
 
-      - name: 🛠️ Build Docker Image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/jun23:latest .
+      - name: ⚙️ Build Docker Image
+        run: |
+          docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TAG .
 
-      - name: 🚀 Run Docker Container (optional)
-        run: docker run -d -p 3000:3000 --name jun23container ${{ secrets.DOCKER_USERNAME }}/jun23:latest
+      - name: 🧹 Remove Old Container If Exists
+        run: |
+          if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
+            docker stop $CONTAINER_NAME || true
+            docker rm $CONTAINER_NAME || true
+          fi
 
-      - name: 📤 Push Docker Image to DockerHub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/jun23:latest
+      - name: 🚀 Run Docker Container
+        run: |
+          docker run -d --name $CONTAINER_NAME -p $PORT:$PORT $DOCKER_USERNAME/$IMAGE_NAME:$TAG
+
+      - name: 📤 Push to Docker Hub
+        run: |
+          docker push $DOCKER_USERNAME/$IMAGE_NAME:$TAG
 
